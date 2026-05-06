@@ -45,6 +45,15 @@ class _SplashSetupScreenState extends State<SplashSetupScreen> with SingleTicker
     }
   }
 
+  int get _currentEthiopianYear {
+    final now = DateTime.now();
+    // Ethiopian year is Gregorian - 8 if before Sept 11 (approx), else - 7.
+    if (now.month < 9 || (now.month == 9 && now.day < 11)) {
+      return now.year - 8;
+    }
+    return now.year - 7;
+  }
+
   Future<void> _submitSetup() async {
     if (_formKey.currentState!.validate()) {
       await AuthService.setupUser(
@@ -155,11 +164,11 @@ class _SplashSetupScreenState extends State<SplashSetupScreen> with SingleTicker
       children: [
         Container(
           padding: const EdgeInsets.all(28),
-          decoration: BoxDecoration(
+            decoration: BoxDecoration(
             color: AppTheme.primaryBlue.withOpacity(0.1),
             borderRadius: BorderRadius.circular(32),
             border: Border.all(color: AppTheme.primaryBlue, width: 2),
-          ),
+            ),
           child: const Icon(Icons.wallet_rounded, size: 80, color: AppTheme.primaryBlue),
         ),
         const SizedBox(height: 24),
@@ -188,7 +197,17 @@ class _SplashSetupScreenState extends State<SplashSetupScreen> with SingleTicker
           ],
         ),
         const SizedBox(height: 16),
-        _buildField(_passwordController, 'Create Master Password', Icons.lock_rounded, true),
+        _buildField(
+          _passwordController,
+          'Master Password',
+          Icons.password_rounded,
+          true,
+          validator: (v) {
+            if (v == null || v.isEmpty) return 'Password is required';
+            if (v.length < 4) return 'Must be at least 4 characters';
+            return null;
+          },
+        ),
         const SizedBox(height: 32),
         Row(
           children: [
@@ -198,14 +217,64 @@ class _SplashSetupScreenState extends State<SplashSetupScreen> with SingleTicker
           ],
         ),
         const SizedBox(height: 16),
-        _buildField(_q1Controller, 'In which city were you born?', Icons.location_city_rounded, false),
+        _buildField(
+          _q1Controller,
+          'Birth City',
+          Icons.location_on_rounded,
+          false,
+          validator: (v) => v!.isEmpty ? 'Birth city is required' : null,
+        ),
         const SizedBox(height: 16),
-        _buildField(_q2Controller, 'What year did your shop open?', Icons.calendar_today_rounded, false, isNumber: true),
+        _buildField(
+          _q2Controller,
+          'Opening Year (Ethiopian)',
+          Icons.event_available_rounded,
+          false,
+          isNumber: true,
+          validator: (v) {
+            if (v == null || v.isEmpty) return 'Year is required';
+            if (v.length != 4) return 'Must be exactly 4 digits';
+            
+            final year = int.tryParse(v);
+            if (year == null) return 'Invalid year format';
+            
+            final currentYear = _currentEthiopianYear;
+            if (year > currentYear) return 'Cannot be in the future ($currentYear E.C.)';
+            if (year < currentYear - 50) return 'Too far in the past (Min: ${currentYear - 50})';
+            
+            return null;
+          },
+        ),
       ],
     );
   }
 
-  Widget _buildField(TextEditingController controller, String label, IconData icon, bool obscure, {bool isNumber = false}) {
+  Widget _buildSectionHeader(String title) {
+    return Row(
+      children: [
+        Container(width: 4, height: 16, decoration: BoxDecoration(color: AppTheme.primaryBlue, borderRadius: BorderRadius.circular(2))),
+        const SizedBox(width: 10),
+        Text(
+          title,
+          style: TextStyle(
+            color: AppTheme.textPrimary.withOpacity(0.8),
+            fontSize: 12,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 2,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildField(
+    TextEditingController controller,
+    String label,
+    IconData icon,
+    bool obscure, {
+    bool isNumber = false,
+    String? Function(String?)? validator,
+  }) {
     return TextFormField(
       controller: controller,
       obscureText: obscure,
@@ -229,7 +298,7 @@ class _SplashSetupScreenState extends State<SplashSetupScreen> with SingleTicker
           borderSide: const BorderSide(color: AppTheme.primaryBlue, width: 2),
         ),
       ),
-      validator: (v) => v!.isEmpty ? 'This information is required' : null,
+      validator: validator,
     );
   }
 
@@ -242,3 +311,4 @@ class _SplashSetupScreenState extends State<SplashSetupScreen> with SingleTicker
     super.dispose();
   }
 }
+
