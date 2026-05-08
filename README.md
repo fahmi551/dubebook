@@ -20,7 +20,7 @@ Built with **Flutter** and **SQLite**, it replaces unreliable paper notebooks wi
 
 ## 🎨 UI/UX Design
 
-The application features a strictly **Dark Theme** (Midnight Blue with Purple & Green accents) tailored for high contrast and readability. It prioritizes:
+The application features a strictly **Light Theme** tailored for high contrast and readability. It prioritizes:
 - **Minimal taps**: Core actions are easily accessible.
 - **Clear Hierarchy**: The most important information (Total Debt, Customer Names) is large and prominent.
 - **Fast Entry**: Number pads pop up automatically where expected.
