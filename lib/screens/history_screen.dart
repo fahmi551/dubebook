@@ -79,18 +79,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
         : _paidTransactions.isEmpty
           ? _buildEmptyState()
           : ListView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               itemCount: _paidTransactions.length,
               itemBuilder: (context, index) {
                 final tx = _paidTransactions[index];
                 final cName = _customerNames[tx.customerId] ?? l.deletedCustomer;
                 
                 return Container(
-                  margin: const EdgeInsets.only(bottom: 12),
+                  margin: const EdgeInsets.only(bottom: 16),
                   padding: const EdgeInsets.all(18),
                   decoration: BoxDecoration(
                     color: AppTheme.surface,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(24),
                     border: Border.all(color: AppTheme.textSecondary.withOpacity(0.1)),
                   ),
                   child: Row(

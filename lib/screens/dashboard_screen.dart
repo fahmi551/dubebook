@@ -94,7 +94,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               : _unpaidCustomers.isEmpty
                 ? _buildEmptyState()
                 : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
                     itemCount: _unpaidCustomers.length,
                     itemBuilder: (context, index) {
                       final item = _unpaidCustomers[index];
@@ -130,7 +130,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final l = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.all(20),
+      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
@@ -321,7 +321,7 @@ class _AnimatedCustomerTile extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: const EdgeInsets.only(bottom: 16),
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
             color: AppTheme.surface,

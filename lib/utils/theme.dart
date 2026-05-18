@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
   // Electric Blue - Adjusted for white background
@@ -13,6 +14,7 @@ class AppTheme {
   static ThemeData get darkTheme {
     return ThemeData(
       brightness: Brightness.light,
+      textTheme: GoogleFonts.interTextTheme(),
       scaffoldBackgroundColor: background,
       primaryColor: primaryBlue,
       colorScheme: const ColorScheme.light(
@@ -40,7 +42,7 @@ class AppTheme {
         elevation: 2,
         shadowColor: Colors.black.withOpacity(0.1),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
           side: BorderSide(color: Colors.black.withOpacity(0.05)),
         ),
       ),

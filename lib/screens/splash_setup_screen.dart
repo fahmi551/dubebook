@@ -107,7 +107,7 @@ class _SplashSetupScreenState extends State<SplashSetupScreen> with SingleTicker
         child: FadeTransition(
           opacity: _fadeAnimation,
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 40.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -148,7 +148,7 @@ class _SplashSetupScreenState extends State<SplashSetupScreen> with SingleTicker
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 40.0),
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -198,7 +198,7 @@ class _SplashSetupScreenState extends State<SplashSetupScreen> with SingleTicker
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
         decoration: BoxDecoration(
           color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
           border: Border.all(color: AppTheme.primaryBlue.withOpacity(0.2), width: 1.5),
           boxShadow: [
             BoxShadow(color: AppTheme.primaryBlue.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 4)),
@@ -310,12 +310,14 @@ class _SplashSetupScreenState extends State<SplashSetupScreen> with SingleTicker
         const SizedBox(height: 16),
         _buildField(
           _passwordController,
-          l.masterPassword,
+          'Create 4-Digit PIN',
           Icons.password_rounded,
           true,
+          isNumber: true,
           validator: (v) {
             if (v == null || v.isEmpty) return l.passwordRequired;
-            if (v.length < 4) return l.passwordMinLength;
+            if (v.length != 4) return 'PIN must be exactly 4 digits';
+            if (int.tryParse(v) == null) return 'PIN must be numeric';
             return null;
           },
         ),

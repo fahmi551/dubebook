@@ -98,11 +98,11 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
       opacity: _headerController,
       child: Container(
         width: double.infinity,
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         padding: const EdgeInsets.all(28),
         decoration: BoxDecoration(
           color: AppTheme.surface,
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(30),
           border: Border.all(color: AppTheme.textSecondary.withOpacity(0.1)),
           boxShadow: [
             BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 15, offset: const Offset(0, 8)),
@@ -155,16 +155,16 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
       );
     }
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       itemCount: _transactions.length,
       itemBuilder: (context, index) {
         final tx = _transactions[index];
         return Container(
-          margin: const EdgeInsets.only(bottom: 10),
+          margin: const EdgeInsets.only(bottom: 16),
           padding: const EdgeInsets.all(18),
           decoration: BoxDecoration(
             color: AppTheme.surface,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(24),
             border: Border.all(color: AppTheme.textSecondary.withOpacity(0.1)),
           ),
           child: Row(

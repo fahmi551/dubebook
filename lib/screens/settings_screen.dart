@@ -240,10 +240,10 @@ class SettingsScreen extends StatelessWidget {
 
   Widget _buildSettingsTile({required IconData icon, required dynamic title, dynamic subtitle, VoidCallback? onTap}) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: AppTheme.surface,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         border: Border.all(color: Colors.white.withOpacity(0.05)),
       ),
       child: ListTile(

@@ -100,7 +100,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen> {
       backgroundColor: AppTheme.background,
       appBar: AppBar(title: Text(_isEditMode ? l.editCredit : l.newCredit)),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(28.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 28.0),
         child: Form(
           key: _formKey,
           child: Column(
