@@ -75,6 +75,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recoveryQuestions => 'RECOVERY QUESTIONS';
 
   @override
+  String get recoveryHelperText =>
+      'Make sure to use an answer you will remember. This will be required when recovering your password.';
+
+  @override
   String get birthCity => 'Birth City';
 
   @override

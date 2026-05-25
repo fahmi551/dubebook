@@ -26,6 +26,7 @@
   "secureSetup": "SECURE SETUP",
   "masterPassword": "Master Password",
   "recoveryQuestions": "RECOVERY QUESTIONS",
+  "recoveryHelperText": "Make sure to use an answer you will remember. This will be required when recovering your password.",
   "birthCity": "Birth City",
   "openingYear": "Opening Year (Ethiopian)",
   "setUpMyShop": "Set Up My Shop",

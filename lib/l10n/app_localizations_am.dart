@@ -75,6 +75,10 @@ class AppLocalizationsAm extends AppLocalizations {
   String get recoveryQuestions => 'የማግኛ ጥያቄዎች';
 
   @override
+  String get recoveryHelperText =>
+      'ዳግም ሊያስታውሱት የሚችሉትን መልስ መጠቀምዎን ያረጋግጡ። ይህ የይለፍ ቃልዎን መልሰው ሲያገኙ ያስፈልጋል።';
+
+  @override
   String get birthCity => 'የትውልድ ከተማ';
 
   @override

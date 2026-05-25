@@ -45,28 +45,82 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final l = AppLocalizations.of(context)!;
-    return Scaffold(
-      backgroundColor: AppTheme.background,
-      appBar: AppBar(
-        title: Text(l.appName),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.history_rounded, color: AppTheme.accentGreen),
-            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HistoryScreen())),
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
+    Widget body;
+    if (isLandscape) {
+      body = Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 2,
+            child: Center(
+              child: SingleChildScrollView(
+                child: _buildHeroCard(isLandscape: true),
+              ),
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.settings_rounded, color: AppTheme.textSecondary),
-            onPressed: () async {
-              await Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
-              // Reload in case language changed
-              if (mounted) setState(() {});
-            },
+          Expanded(
+            flex: 3,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 20, 24, 12),
+                  child: Row(
+                    children: [
+                      Text(
+                        l.pendingDebts,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 2,
+                          color: AppTheme.textSecondary,
+                        ),
+                      ),
+                      const Spacer(),
+                      Text(
+                        l.customersCount(_unpaidCustomers.length),
+                        style: TextStyle(fontSize: 10, color: AppTheme.textSecondary.withOpacity(0.5), fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: _isLoading
+                    ? const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(AppTheme.primaryBlue)))
+                    : _unpaidCustomers.isEmpty
+                      ? _buildEmptyState(isLandscape: true)
+                      : ListView.builder(
+                          padding: const EdgeInsets.fromLTRB(12, 0, 24, 0),
+                          itemCount: _unpaidCustomers.length,
+                          itemBuilder: (context, index) {
+                            final item = _unpaidCustomers[index];
+                            final customer = Customer.fromMap(item);
+                            final debt = (item['total_debt'] as num).toDouble();
+                            final isOverdue = customer.deadline != null && customer.deadline!.isBefore(DateTime.now());
+
+                            return _AnimatedCustomerTile(
+                              index: index,
+                              customer: customer,
+                              debt: debt,
+                              isOverdue: isOverdue,
+                              onTap: () async {
+                                await Navigator.push(context, MaterialPageRoute(builder: (_) => CustomerDetailScreen(customer: customer)));
+                                _loadData();
+                              },
+                            );
+                          },
+                        ),
+                ),
+              ],
+            ),
           ),
         ],
-      ),
-      body: Column(
+      );
+    } else {
+      body = Column(
         children: [
-          _buildHeroCard(),
+          _buildHeroCard(isLandscape: false),
           Padding(
             padding: const EdgeInsets.fromLTRB(24, 8, 24, 12),
             child: Row(
@@ -92,7 +146,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: _isLoading
               ? const Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(AppTheme.primaryBlue)))
               : _unpaidCustomers.isEmpty
-                ? _buildEmptyState()
+                ? _buildEmptyState(isLandscape: false)
                 : ListView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     itemCount: _unpaidCustomers.length,
@@ -116,7 +170,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
           ),
         ],
+      );
+    }
+
+    return Scaffold(
+      backgroundColor: AppTheme.background,
+      appBar: AppBar(
+        title: Text(l.appName),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.history_rounded, color: AppTheme.accentGreen),
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HistoryScreen())),
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings_rounded, color: AppTheme.textSecondary),
+            onPressed: () async {
+              await Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+              // Reload in case language changed
+              if (mounted) setState(() {});
+            },
+          ),
+        ],
       ),
+      body: body,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showAddCustomerDialog,
         backgroundColor: AppTheme.primaryBlue,
@@ -126,14 +202,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildHeroCard() {
+  Widget _buildHeroCard({required bool isLandscape}) {
     final l = AppLocalizations.of(context)!;
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-      padding: const EdgeInsets.all(32),
+      margin: isLandscape
+          ? const EdgeInsets.fromLTRB(24, 20, 12, 20)
+          : const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      padding: isLandscape
+          ? const EdgeInsets.symmetric(horizontal: 20, vertical: 24)
+          : const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(isLandscape ? 24 : 30),
         gradient: LinearGradient(
           colors: [
             AppTheme.primaryBlue,
@@ -145,8 +225,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
         boxShadow: [
           BoxShadow(
             color: AppTheme.primaryBlue.withOpacity(0.3),
-            blurRadius: 25,
-            offset: const Offset(0, 12),
+            blurRadius: isLandscape ? 15 : 25,
+            offset: Offset(0, isLandscape ? 8 : 12),
           ),
         ],
       ),
@@ -157,25 +237,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
             l.totalOutstanding,
             style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 2),
           ),
-          const SizedBox(height: 16),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                _totalUnpaid.toStringAsFixed(2),
-                style: const TextStyle(fontSize: 48, fontWeight: FontWeight.w900, color: Colors.white),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white.withOpacity(0.7)),
-                  l.birr
-              ),
-            ],
+          SizedBox(height: isLandscape ? 12 : 16),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  _totalUnpaid.toStringAsFixed(2),
+                  style: TextStyle(fontSize: isLandscape ? 36 : 48, fontWeight: FontWeight.w900, color: Colors.white),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  style: TextStyle(fontSize: isLandscape ? 16 : 20, fontWeight: FontWeight.bold, color: Colors.white.withOpacity(0.7)),
+                  l.birr,
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: isLandscape ? 16 : 24),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            padding: isLandscape
+                ? const EdgeInsets.symmetric(horizontal: 12, vertical: 6)
+                : const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
               color: Colors.black.withOpacity(0.2),
               borderRadius: BorderRadius.circular(12),
@@ -183,11 +269,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.trending_up_rounded, size: 16, color: AppTheme.accentGreen),
+                Icon(Icons.trending_up_rounded, size: isLandscape ? 14 : 16, color: AppTheme.accentGreen),
                 const SizedBox(width: 8),
                 Text(
                   l.activeCredit,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white.withOpacity(0.9)),
+                  style: TextStyle(fontSize: isLandscape ? 10 : 12, fontWeight: FontWeight.w700, color: Colors.white.withOpacity(0.9)),
                 ),
               ],
             ),
@@ -197,24 +283,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState({required bool isLandscape}) {
     final l = AppLocalizations.of(context)!;
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.shield_moon_rounded, size: 100, color: AppTheme.textSecondary.withOpacity(0.1)),
-          const SizedBox(height: 24),
-          Text(
-            l.noCustomersFound,
-            style: TextStyle(
-              color: AppTheme.textSecondary.withOpacity(0.3),
-              fontWeight: FontWeight.w900,
-              letterSpacing: 3,
-              fontSize: 14,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.shield_moon_rounded,
+              size: isLandscape ? 64 : 100,
+              color: AppTheme.textSecondary.withOpacity(0.1),
             ),
-          ),
-        ],
+            SizedBox(height: isLandscape ? 12 : 24),
+            Text(
+              l.noCustomersFound,
+              style: TextStyle(
+                color: AppTheme.textSecondary.withOpacity(0.3),
+                fontWeight: FontWeight.w900,
+                letterSpacing: 3,
+                fontSize: isLandscape ? 12 : 14,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

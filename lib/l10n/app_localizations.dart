@@ -232,6 +232,12 @@ abstract class AppLocalizations {
   /// **'RECOVERY QUESTIONS'**
   String get recoveryQuestions;
 
+  /// No description provided for @recoveryHelperText.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure to use an answer you will remember. This will be required when recovering your password.'**
+  String get recoveryHelperText;
+
   /// No description provided for @birthCity.
   ///
   /// In en, this message translates to:

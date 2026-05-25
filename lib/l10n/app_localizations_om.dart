@@ -75,6 +75,10 @@ class AppLocalizationsOm extends AppLocalizations {
   String get recoveryQuestions => 'GAAFFILEE DEEBISUU';
 
   @override
+  String get recoveryHelperText =>
+      'Deebii booda yaadachuu dandeessan galchuudhaaf qabaa. Kun yeroo jecha darbii deebistan isin barbaachisa.';
+
+  @override
   String get birthCity => 'Magaalaa Dhalootaa';
 
   @override

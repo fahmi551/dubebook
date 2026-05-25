@@ -26,6 +26,7 @@
   "secureSetup": "ደህንነት ማዋቀር",
   "masterPassword": "ዋና የይለፍ ቃል",
   "recoveryQuestions": "የማግኛ ጥያቄዎች",
+  "recoveryHelperText": "ዳግም ሊያስታውሱት የሚችሉትን መልስ መጠቀምዎን ያረጋግጡ። ይህ የይለፍ ቃልዎን መልሰው ሲያገኙ ያስፈልጋል።",
   "birthCity": "የትውልድ ከተማ",
   "openingYear": "የመክፈቻ ዓመት (ኢትዮጵያ)",
   "setUpMyShop": "ሱቄን አዋቅር",
